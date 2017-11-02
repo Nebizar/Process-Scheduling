@@ -24,7 +24,7 @@ private:
 	
 
 public:
-	void getData(string path)
+	void getData(string path)//get data from designated file
 	{
 		int n;
 		
@@ -45,6 +45,7 @@ public:
 				if (tmp == "MaxNodes:") maxNodes = value;
 				else if (tmp == "MaxProcs:") maxProcs = value;
 			}
+			else if (line == "") continue;
 			else
 			{
 				Task task;
@@ -53,6 +54,9 @@ public:
 				{
 					pom.push_back(n);
 				}
+				//for (int i = 0; i < pom.size(); i++)
+					//cout << pom[i] << "  ";              //Debug test
+				//system("PAUSE");
 				task.id = pom[0];
 				task.submit = pom[1];
 				task.run = pom[3];
@@ -61,16 +65,26 @@ public:
 				data.push_back(task);
 				counter++;
 			}
-
 		}
 		plik.close();
 	}
-	void showData()
+	void showData()//show needed data from file
 	{
 		cout << maxNodes << endl;
 		cout << maxProcs << endl;
 		for (int i = 0; i < counter; i++)
 			cout << data[i].id << "\t" << data[i].submit << "\t" << data[i].run << "\t" << data[i].proc << endl;
+	}
+	void GRASP(int quant)//GRASP algorithm for finding solution
+	{
+		srand(time(NULL));
+		int tSize = 0.1 * data.size();
+		int *bestChoice = new int[tSize];
+		vector <int> output;
+		bool *procTab = new bool [maxProcs];
+
+
+
 	}
 
 };
@@ -80,5 +94,6 @@ int main()
 	Data tasklist;
 	tasklist.getData("data1.txt");
 	tasklist.showData();
+	system("PAUSE");
 	return EXIT_SUCCESS;
 }
