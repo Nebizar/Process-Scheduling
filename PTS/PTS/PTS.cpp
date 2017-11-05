@@ -15,12 +15,29 @@ struct Task {
 	int proc;//size_j - processors needed 
 };
 
+struct Proc {
+	int id;
+	int start;
+	int stop;
+	vector <int> processors;
+};
+
 class Data {
 private:
 	vector<Task> data;
-	int maxNodes;
-	int maxProcs;
+	vector<Proc> output;
+	int maxNodes; //==maxProcs
+	int maxJobs;	//==maxRecords
 	int counter = 0;
+
+	vector <int> construction()//first greedy solution constructor
+	{
+		vector<int> solution;
+		for (int i = 0; i < data.size(); i++)
+		{
+
+		}
+	}
 	
 
 public:
@@ -43,7 +60,7 @@ public:
 				stringstream ss(line);
 				ss >> c >> tmp >> value;
 				if (tmp == "MaxNodes:") maxNodes = value;
-				else if (tmp == "MaxProcs:") maxProcs = value;
+				else if (tmp == "MaxJobs:") maxJobs = value;
 			}
 			else if (line == "") continue;
 			else
@@ -62,8 +79,12 @@ public:
 				task.run = pom[3];
 				task.proc = pom[4];
 				pom.clear();
-				data.push_back(task);
-				counter++;
+				if (task.id != -1 && task.submit != -1 && task.run > 0 && task.proc != -1)
+				{
+					data.push_back(task);
+					counter++;
+				}
+				else maxJobs--;
 			}
 		}
 		plik.close();
@@ -71,17 +92,30 @@ public:
 	void showData()//show needed data from file
 	{
 		cout << maxNodes << endl;
-		cout << maxProcs << endl;
+		cout << maxJobs << endl;
 		for (int i = 0; i < counter; i++)
 			cout << data[i].id << "\t" << data[i].submit << "\t" << data[i].run << "\t" << data[i].proc << endl;
 	}
+	void save(string path)//save output from algorithm in designated file
+	{
+		ofstream plik;
+		plik.open(path, ios::out);
+		for (int i = 0; i < output.size(); i++)
+		{
+			plik << output[i].id << " " << output[i].start << " " << output[i].stop << " ";
+			for (int j = 0; j < output[i].processors.size(); j++) plik << output[i].processors[j] << " ";
+			plik << endl;
+		}
+		plik.close();
+	}
+
 	void GRASP(int quant)//GRASP algorithm for finding solution
 	{
 		srand(time(NULL));
 		int tSize = 0.1 * data.size();
-		int *bestChoice = new int[tSize];
+		int *RCL = new int[tSize];
 		vector <int> output;
-		bool *procTab = new bool [maxProcs];
+		bool *procTab = new bool [maxNodes];
 
 
 
@@ -93,7 +127,7 @@ int main()
 {
 	Data tasklist;
 	tasklist.getData("data1.txt");
-	tasklist.showData();
+	//tasklist.showData();
 	system("PAUSE");
 	return EXIT_SUCCESS;
 }
