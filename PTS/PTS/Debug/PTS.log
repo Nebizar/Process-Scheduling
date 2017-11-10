@@ -1,4 +1,6 @@
 ﻿  PTS.cpp
-c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(83): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(84): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(103): warning C4018: '<': signed/unsigned mismatch
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(106): warning C4018: '<': signed/unsigned mismatch
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(114): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(115): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   PTS.vcxproj -> C:\Users\Krzysztof\Desktop\STUDIA\INFORMATYKA - 3\OK\Process-Scheduling\PTS\Debug\PTS.exe

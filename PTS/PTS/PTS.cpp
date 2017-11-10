@@ -13,6 +13,7 @@ struct Task {
 	int submit;//r_j - submit time
 	int run;//p_j - run time
 	int proc;//size_j - processors needed 
+	double ratio; //ratio = time*proc
 };
 
 struct Proc {
@@ -30,7 +31,7 @@ private:
 	int maxJobs;	//==maxRecords
 	int counter = 0;
 
-	vector <int> construction()//first greedy solution constructor
+	/*vector <int> construction()//first greedy solution constructor
 	{
 		vector<int> solution;
 		for (int i = 0; i < data.size(); i++)
@@ -38,7 +39,7 @@ private:
 
 		}
 	}
-	
+	*/
 
 public:
 	void getData(string path)//get data from designated file
@@ -78,6 +79,7 @@ public:
 				task.submit = pom[1];
 				task.run = pom[3];
 				task.proc = pom[4];
+				task.ratio = task.run*task.proc;
 				pom.clear();
 				if (task.id != -1 && task.submit != -1 && task.run > 0 && task.proc != -1)
 				{
@@ -112,11 +114,14 @@ public:
 	void GRASP(int quant)//GRASP algorithm for finding solution
 	{
 		srand(time(NULL));
-		int tSize = 0.1 * data.size();
-		int *RCL = new int[tSize];
-		vector <int> output;
+		unsigned int time;
+		vector <int> RCL;
+		vector <Proc> output;
 		bool *procTab = new bool [maxNodes];
+		for (int i = 0; i <= quant; i++)
+		{
 
+		}
 
 
 	}
@@ -126,7 +131,7 @@ public:
 int main()
 {
 	Data tasklist;
-	tasklist.getData("data1.txt");
+	tasklist.getData("DAS2-fs0-2003-1.swf");
 	//tasklist.showData();
 	system("PAUSE");
 	return EXIT_SUCCESS;
