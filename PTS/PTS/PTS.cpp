@@ -31,6 +31,8 @@ private:
 	int maxJobs;	//==maxRecords
 	int counter = 0;
 
+
+	bool sortfunc(Task i, Task j) { return (i.ratio<j.ratio); }
 	/*vector <int> construction()//first greedy solution constructor
 	{
 		vector<int> solution;
@@ -111,19 +113,117 @@ public:
 		plik.close();
 	}
 
-	void GRASP(int quant)//GRASP algorithm for finding solution
+	void GRASP()//GRASP algorithm for finding solution
 	{
+		int WindowSize = 2;
+		int check;
+		int selected;
 		srand(time(NULL));
-		unsigned int time;
+		unsigned int time = 0;
 		vector <int> RCL;
 		vector <Proc> output;
-		bool *procTab = new bool [maxNodes];
-		for (int i = 0; i <= quant; i++)
+		int *procTab = new int[maxNodes];
+		for (int i = 0; i<maxNodes; i++)
 		{
-
+			procTab[i] = 0;
 		}
-
-
+		Proc *out = new Proc[maxJobs];
+		int *window = new int[WindowSize];
+		int *grasp = new int[5];
+		int counter = 0;
+		sort(data.begin(), data.end(), sortfunc);
+		for (int i = 0; i<WindowSize; i++)
+		{
+			window[i] = counter;
+			counter++;
+		}
+		int counter1 = 0;
+		while (1)
+		{
+			check = 0;
+			for (int j = 0; j<WindowSize; j++)
+			{
+				if (window[j] == -1)
+				{
+					if (counter<maxJobs)
+					{
+						window[j] = counter;
+						counter++;
+					}
+					check++;
+				}
+			}
+			if (check == WindowSize)
+			{
+				break;
+			}
+			selected = rand() % WindowSize + 0;
+			while (window[selected] == -1)
+			{
+				selected = rand() % WindowSize + 0;
+			}
+			grasp[counter1] = window[selected];
+			counter1++;
+			window[selected] = -1;
+		}
+		int counter_out = 0;
+		while (1)
+		{
+			check = 0;
+			for (int i = 0; i<maxJobs; i++)
+			{
+				if (grasp[i] != -1 && time >= data[grasp[i]].submit)
+				{
+					for (int j = 0; j<maxNodes; j++)
+					{
+						int counter2 = 0;
+						if (procTab[j] <= time)
+						{
+							for (int k = j; k<j + data[grasp[i]].proc; k++)
+							{
+								if (procTab[k] <= time)
+									counter2++;
+							}
+							if (counter2 == data[grasp[i]].proc)
+							{
+								int finish = time + data[grasp[i]].run;
+								for (int k = j; k<j + data[grasp[i]].proc; k++)
+								{
+									procTab[k] = finish;
+									out[counter_out].processors.push_back(k);
+								}
+								out[counter_out].id = data[grasp[i]].id;
+								out[counter_out].start = time;
+								out[counter_out].stop = finish;
+								output.push_back(out[counter_out]);
+								counter_out++;
+								grasp[i] = -1;
+								break;
+							}
+						}
+					}
+				}
+				else
+				{
+					if (grasp[i] == -1)
+						check++;
+				}
+			}
+			if (check == maxJobs)
+			{
+				break;
+			}
+			time++;
+		}
+		for (int i = 0; i<maxJobs; i++)
+		{
+			cout << "id " << output[i].id << " start " << output[i].start << " stop " << output[i].stop << " processors ";
+			for (int n = 0; n<output[i].processors.size(); n++)
+			{
+				cout << output[i].processors[n] << " ";
+			}
+			cout << endl;
+		}
 	}
 
 };
