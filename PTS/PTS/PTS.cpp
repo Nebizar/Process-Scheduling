@@ -113,26 +113,27 @@ public:
 		plik.close();
 	}
 
-	void GRASP()//GRASP algorithm for finding solution
+	void GRASP(int quant)//GRASP algorithm for finding solution
 	{
-		int WindowSize = 2;
+		maxJobs = quant;
+		int WindowSize = 0.01 * maxJobs;//Window - best elements
 		int check;
 		int selected;
 		srand(time(NULL));
 		unsigned int time = 0;
-		vector <int> RCL;
+		//vector <int> RCL;
 		vector <Proc> output;
-		int *procTab = new int[maxNodes];
+		int *procTab = new int[maxNodes];//processors control free/busy and times
 		for (int i = 0; i<maxNodes; i++)
 		{
 			procTab[i] = 0;
 		}
 		Proc *out = new Proc[maxJobs];
-		int *window = new int[WindowSize];
-		int *grasp = new int[5];
+		int *window = new int[WindowSize];//table of best elements
+		int *grasp = new int[maxJobs];//solution index only
 		int counter = 0;
-		sort(data.begin(), data.end(), sortfunc);
-		for (int i = 0; i<WindowSize; i++)
+		sort(data.begin(), data.end(), sortfunc);//sort elements by ratio
+		for (int i = 0; i<WindowSize; i++)//throw to best elements by index
 		{
 			window[i] = counter;
 			counter++;
@@ -141,7 +142,7 @@ public:
 		while (1)
 		{
 			check = 0;
-			for (int j = 0; j<WindowSize; j++)
+			for (int j = 0; j<WindowSize; j++)//if empty in best elements, throw next best if there are processess
 			{
 				if (window[j] == -1)
 				{
@@ -153,18 +154,18 @@ public:
 					check++;
 				}
 			}
-			if (check == WindowSize)
+			if (check == WindowSize)//if only -1 break - all elements used
 			{
 				break;
 			}
-			selected = rand() % WindowSize + 0;
-			while (window[selected] == -1)
+			selected = rand() % WindowSize + 0;//select random from window
+			while (window[selected] == -1)//select another if -1
 			{
 				selected = rand() % WindowSize + 0;
 			}
-			grasp[counter1] = window[selected];
+			grasp[counter1] = window[selected];//insert into solution
 			counter1++;
-			window[selected] = -1;
+			window[selected] = -1;//used element
 		}
 		int counter_out = 0;
 		while (1)
@@ -177,17 +178,17 @@ public:
 					for (int j = 0; j<maxNodes; j++)
 					{
 						int counter2 = 0;
-						if (procTab[j] <= time)
+						if (procTab[j] <= time)//check if enough free processors next to one another
 						{
 							for (int k = j; k<j + data[grasp[i]].proc; k++)
 							{
 								if (procTab[k] <= time)
 									counter2++;
 							}
-							if (counter2 == data[grasp[i]].proc)
+							if (counter2 == data[grasp[i]].proc)//if enough proc
 							{
-								int finish = time + data[grasp[i]].run;
-								for (int k = j; k<j + data[grasp[i]].proc; k++)
+								int finish = time + data[grasp[i]].run;//end time
+								for (int k = j; k<j + data[grasp[i]].proc; k++)//push back used processors
 								{
 									procTab[k] = finish;
 									out[counter_out].processors.push_back(k);
@@ -215,7 +216,7 @@ public:
 			}
 			time++;
 		}
-		for (int i = 0; i<maxJobs; i++)
+		/*for (int i = 0; i<maxJobs; i++)
 		{
 			cout << "id " << output[i].id << " start " << output[i].start << " stop " << output[i].stop << " processors ";
 			for (int n = 0; n<output[i].processors.size(); n++)
@@ -223,7 +224,7 @@ public:
 				cout << output[i].processors[n] << " ";
 			}
 			cout << endl;
-		}
+		}*/
 	}
 
 };
