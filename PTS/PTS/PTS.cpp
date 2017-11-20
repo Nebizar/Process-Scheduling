@@ -8,6 +8,7 @@
 #include <sstream>
 using namespace std;
 
+
 struct Task {
 	int id;//job number
 	int submit;//r_j - submit time
@@ -23,16 +24,19 @@ struct Proc {
 	vector <int> processors;
 };
 
+bool sortfunc(Task i, Task j) { return (i.ratio<j.ratio); }
+
+
 class Data {
 private:
 	vector<Task> data;
 	vector<Proc> output;
 	int maxNodes; //==maxProcs
 	int maxJobs;	//==maxRecords
-	int counter = 0;
+	int data_size;
 
 
-	bool sortfunc(Task i, Task j) { return (i.ratio<j.ratio); }
+	
 	/*vector <int> construction()//first greedy solution constructor
 	{
 		vector<int> solution;
@@ -44,10 +48,10 @@ private:
 	*/
 
 public:
-	void getData(string path)//get data from designated file
+	void getData(string path, int quant)//get data from designated file
 	{
 		int n;
-		
+		data_size = 0;
 		vector <int> pom;
 		ifstream plik;
 		string line;
@@ -68,6 +72,10 @@ public:
 			else if (line == "") continue;
 			else
 			{
+				/*if (maxJobs < quant) {
+					cout << "ERROR" << "\n";
+					break;
+				}*/
 				Task task;
 				stringstream stream(line);
 				while (stream >> n)
@@ -86,7 +94,8 @@ public:
 				if (task.id != -1 && task.submit != -1 && task.run > 0 && task.proc != -1)
 				{
 					data.push_back(task);
-					counter++;
+					data_size++;
+					if (data_size == quant) break;
 				}
 				else maxJobs--;
 			}
@@ -97,26 +106,15 @@ public:
 	{
 		cout << maxNodes << endl;
 		cout << maxJobs << endl;
-		for (int i = 0; i < counter; i++)
+		for (int i = 0; i < data_size; i++)
 			cout << data[i].id << "\t" << data[i].submit << "\t" << data[i].run << "\t" << data[i].proc << endl;
 	}
-	void save(string path)//save output from algorithm in designated file
-	{
-		ofstream plik;
-		plik.open(path, ios::out);
-		for (int i = 0; i < output.size(); i++)
-		{
-			plik << output[i].id << " " << output[i].start << " " << output[i].stop << " ";
-			for (int j = 0; j < output[i].processors.size(); j++) plik << output[i].processors[j] << " ";
-			plik << endl;
-		}
-		plik.close();
-	}
+	
 
-	void GRASP(int quant)//GRASP algorithm for finding solution
+	void GRASP(string path)//GRASP algorithm for finding solution
 	{
-		maxJobs = quant;
-		int WindowSize = 0.01 * maxJobs;//Window - best elements
+		maxJobs = data.size();
+		int WindowSize = 20;//Window - best elements
 		int check;
 		int selected;
 		srand(time(NULL));
@@ -133,6 +131,7 @@ public:
 		int *grasp = new int[maxJobs];//solution index only
 		int counter = 0;
 		sort(data.begin(), data.end(), sortfunc);//sort elements by ratio
+		//cout << "check";
 		for (int i = 0; i<WindowSize; i++)//throw to best elements by index
 		{
 			window[i] = counter;
@@ -167,6 +166,7 @@ public:
 			counter1++;
 			window[selected] = -1;//used element
 		}
+		//cout << "check";
 		int counter_out = 0;
 		while (1)
 		{
@@ -197,6 +197,7 @@ public:
 								out[counter_out].start = time;
 								out[counter_out].stop = finish;
 								output.push_back(out[counter_out]);
+								//cout << "OK";
 								counter_out++;
 								grasp[i] = -1;
 								break;
@@ -216,7 +217,7 @@ public:
 			}
 			time++;
 		}
-		/*for (int i = 0; i<maxJobs; i++)
+		for (int i = 0; i<maxJobs; i++)
 		{
 			cout << "id " << output[i].id << " start " << output[i].start << " stop " << output[i].stop << " processors ";
 			for (int n = 0; n<output[i].processors.size(); n++)
@@ -224,7 +225,31 @@ public:
 				cout << output[i].processors[n] << " ";
 			}
 			cout << endl;
-		}*/
+		}
+		ofstream plik;
+		plik.open("wyniki.txt", ios::out);
+		for (int i = 0; i < data_size; i++)
+		{
+			plik << output[i].id << " " << output[i].start << " " << output[i].stop << " ";
+			for (int j = 0; j < output[i].processors.size(); j++) plik << output[i].processors[j] << " ";
+			plik << endl;
+			//cout << i << " ";
+		}
+		plik.close();
+	}
+
+	void save(string path)//save output from algorithm in designated file
+	{
+		ofstream plik;
+		plik.open(path, ios::out);
+		for (int i = 0; i < data_size; i++)
+		{
+			plik << output[i].id << " " << output[i].start << " " << output[i].stop << " ";
+			for (int j = 0; j < output[i].processors.size(); j++) plik << output[i].processors[j] << " ";
+			plik << endl;
+			cout << i << " ";
+		}
+		plik.close();
 	}
 
 };
@@ -232,8 +257,11 @@ public:
 int main()
 {
 	Data tasklist;
-	tasklist.getData("DAS2-fs0-2003-1.swf");
+	tasklist.getData("DAS2-fs0-2003-1.swf", 500);
+	//cout << "good";
 	//tasklist.showData();
+	tasklist.GRASP("wyniki.txt");
+	//tasklist.save("wyniki.txt");
 	system("PAUSE");
 	return EXIT_SUCCESS;
 }
