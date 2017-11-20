@@ -36,17 +36,6 @@ private:
 	int data_size;
 
 
-	
-	/*vector <int> construction()//first greedy solution constructor
-	{
-		vector<int> solution;
-		for (int i = 0; i < data.size(); i++)
-		{
-
-		}
-	}
-	*/
-
 public:
 	void getData(string path, int quant)//get data from designated file
 	{
@@ -66,7 +55,7 @@ public:
 				char c;
 				stringstream ss(line);
 				ss >> c >> tmp >> value;
-				if (tmp == "MaxNodes:") maxNodes = value;
+				if (tmp == "MaxProcs:") maxNodes = value;
 				else if (tmp == "MaxJobs:") maxJobs = value;
 			}
 			else if (line == "") continue;
@@ -131,7 +120,7 @@ public:
 		int *grasp = new int[maxJobs];//solution index only
 		int counter = 0;
 		sort(data.begin(), data.end(), sortfunc);//sort elements by ratio
-		//cout << "check";
+		//cout << "check";    //Debug
 		for (int i = 0; i<WindowSize; i++)//throw to best elements by index
 		{
 			window[i] = counter;
@@ -166,7 +155,7 @@ public:
 			counter1++;
 			window[selected] = -1;//used element
 		}
-		//cout << "check";
+		//cout << "check";    //Debug
 		int counter_out = 0;
 		while (1)
 		{
@@ -197,7 +186,7 @@ public:
 								out[counter_out].start = time;
 								out[counter_out].stop = finish;
 								output.push_back(out[counter_out]);
-								//cout << "OK";
+								//cout << "OK";  //Debug
 								counter_out++;
 								grasp[i] = -1;
 								break;
@@ -257,11 +246,11 @@ public:
 int main()
 {
 	Data tasklist;
-	tasklist.getData("DAS2-fs0-2003-1.swf", 500);
-	//cout << "good";
+	tasklist.getData("DAS2-fs0-2003-1.swf", 1000);
+	//cout << "good";      //Debug
 	//tasklist.showData();
 	tasklist.GRASP("wyniki.txt");
-	//tasklist.save("wyniki.txt");
+	//tasklist.save("wyniki.txt");   //strange error
 	system("PAUSE");
 	return EXIT_SUCCESS;
 }
