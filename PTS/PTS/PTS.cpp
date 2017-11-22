@@ -26,6 +26,11 @@ struct Proc {
 
 bool sortfunc(Task i, Task j) { return (i.ratio<j.ratio); }
 
+double obliczSekundy(clock_t czas)
+{
+	return static_cast < double >(czas) / CLOCKS_PER_SEC;
+}
+
 
 class Data {
 private:
@@ -100,7 +105,7 @@ public:
 	}
 	
 
-	void GRASP(string path)//GRASP algorithm for finding solution
+	int GRASP()//GRASP algorithm for finding solution
 	{
 		maxJobs = data.size();
 		int WindowSize = 20;//Window - best elements
@@ -109,7 +114,6 @@ public:
 		srand(time(NULL));
 		unsigned int time = 0;
 		//vector <int> RCL;
-		vector <Proc> output;
 		int *procTab = new int[maxNodes];//processors control free/busy and times
 		for (int i = 0; i<maxNodes; i++)
 		{
@@ -157,9 +161,14 @@ public:
 		}
 		//cout << "check";    //Debug
 		int counter_out = 0;
+		bool flag = false;
+		int min = 999999999;
+		int max=0;
+		//int pom = 0;
 		while (1)
 		{
 			check = 0;
+			flag = false;
 			for (int i = 0; i<maxJobs; i++)
 			{
 				if (grasp[i] != -1 && time >= data[grasp[i]].submit)
@@ -177,6 +186,7 @@ public:
 							if (counter2 == data[grasp[i]].proc)//if enough proc
 							{
 								int finish = time + data[grasp[i]].run;//end time
+								if (finish > max) max = finish;
 								for (int k = j; k<j + data[grasp[i]].proc; k++)//push back used processors
 								{
 									procTab[k] = finish;
@@ -186,9 +196,11 @@ public:
 								out[counter_out].start = time;
 								out[counter_out].stop = finish;
 								output.push_back(out[counter_out]);
-								//cout << "OK";  //Debug
+								//cout << counter_out <<" ";  //Debug
 								counter_out++;
+								//pom = grasp
 								grasp[i] = -1;
+								flag = true;
 								break;
 							}
 						}
@@ -196,17 +208,31 @@ public:
 				}
 				else
 				{
+					
 					if (grasp[i] == -1)
 						check++;
+					else if (data[grasp[i]].submit < min) min = data[grasp[i]].submit;
 				}
 			}
 			if (check == maxJobs)
 			{
 				break;
 			}
-			time++;
+			if (obliczSekundy(clock()) >= 295)
+			{
+				printf("Zbyt duza instancja lub zabraklo czasu - przepraszamy.");
+				break;
+			}
+			if (flag == false)
+			{
+				time = min;
+				min = 999999999;
+			}
+			else time++;
+			//getchar();
+			//cout << time << " ";
 		}
-		for (int i = 0; i<maxJobs; i++)
+		/*for (int i = 0; i<maxJobs; i++)
 		{
 			cout << "id " << output[i].id << " start " << output[i].start << " stop " << output[i].stop << " processors ";
 			for (int n = 0; n<output[i].processors.size(); n++)
@@ -214,17 +240,8 @@ public:
 				cout << output[i].processors[n] << " ";
 			}
 			cout << endl;
-		}
-		ofstream plik;
-		plik.open("wyniki.txt", ios::out);
-		for (int i = 0; i < data_size; i++)
-		{
-			plik << output[i].id << " " << output[i].start << " " << output[i].stop << " ";
-			for (int j = 0; j < output[i].processors.size(); j++) plik << output[i].processors[j] << " ";
-			plik << endl;
-			//cout << i << " ";
-		}
-		plik.close();
+		}*/
+		return  max;
 	}
 
 	void save(string path)//save output from algorithm in designated file
@@ -236,21 +253,51 @@ public:
 			plik << output[i].id << " " << output[i].start << " " << output[i].stop << " ";
 			for (int j = 0; j < output[i].processors.size(); j++) plik << output[i].processors[j] << " ";
 			plik << endl;
-			cout << i << " ";
+			//cout << i << " ";
 		}
 		plik.close();
+	}
+
+	vector<Proc> const &getV() const {
+		return output;
 	}
 
 };
 
 int main()
 {
+	int num = 0;
+	int out1, out2= 2147483646;
+	double start, stop;
 	Data tasklist;
-	tasklist.getData("DAS2-fs0-2003-1.swf", 1000);
+	vector<Proc> best_output;
+	//overall_time = obliczSekundy(clock());
+	tasklist.getData("DAS2-fs0-2003-1.swf", 10000);
 	//cout << "good";      //Debug
 	//tasklist.showData();
-	tasklist.GRASP("wyniki.txt");
+	do {
+		out1 = tasklist.GRASP();
+		if (out1 < out2)
+		{
+			out2 = out1;
+			best_output = tasklist.getV();
+		}
+		cout << out1 << endl;
+		num++;
+	} while (obliczSekundy(clock()) < 295 && num < 5);
+	stop = obliczSekundy(clock());
+	cout << stop << endl;
 	//tasklist.save("wyniki.txt");   //strange error
+	ofstream plik;
+	plik.open("wyniki.txt", ios::out);
+	for (int i = 0; i < best_output.size(); i++)
+	{
+		plik << best_output[i].id << " " << best_output[i].start << " " << best_output[i].stop << " ";
+		for (int j = 0; j < best_output[i].processors.size(); j++) plik << best_output[i].processors[j] << " ";
+		plik << endl;
+		//cout << i << " ";
+	}
+	plik.close();
 	system("PAUSE");
 	return EXIT_SUCCESS;
 }

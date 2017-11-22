@@ -1,9 +1,10 @@
 ﻿  PTS.cpp
-c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(120): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(116): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(176): warning C4018: '>=': signed/unsigned mismatch
 c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(181): warning C4018: '<=': signed/unsigned mismatch
 c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(185): warning C4018: '<=': signed/unsigned mismatch
-c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(223): warning C4018: '<': signed/unsigned mismatch
-c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(234): warning C4018: '<': signed/unsigned mismatch
-c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(248): warning C4018: '<': signed/unsigned mismatch
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(256): warning C4018: '<': signed/unsigned mismatch
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(295): warning C4018: '<': signed/unsigned mismatch
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(298): warning C4018: '<': signed/unsigned mismatch
+c:\users\krzysztof\desktop\studia\informatyka - 3\ok\process-scheduling\pts\pts\pts.cpp(273): warning C4101: 'start': unreferenced local variable
   PTS.vcxproj -> C:\Users\Krzysztof\Desktop\STUDIA\INFORMATYKA - 3\OK\Process-Scheduling\PTS\Debug\PTS.exe
