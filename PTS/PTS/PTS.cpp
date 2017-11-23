@@ -39,6 +39,8 @@ private:
 	int maxNodes; //==maxProcs
 	int maxJobs;	//==maxRecords
 	int data_size;
+	int lowerBound;
+	unsigned int sumTime=0;
 
 
 public:
@@ -107,6 +109,7 @@ public:
 
 	int GRASP()//GRASP algorithm for finding solution
 	{
+		sumTime = 0;
 		maxJobs = data.size();
 		int WindowSize = 20;//Window - best elements
 		int check;
@@ -123,6 +126,7 @@ public:
 		int *window = new int[WindowSize];//table of best elements
 		int *grasp = new int[maxJobs];//solution index only
 		int counter = 0;
+		lowerBound = data[maxJobs - 1].submit + data[maxJobs - 1].run;
 		sort(data.begin(), data.end(), sortfunc);//sort elements by ratio
 		//cout << "check";    //Debug
 		for (int i = 0; i<WindowSize; i++)//throw to best elements by index
@@ -241,6 +245,8 @@ public:
 			}
 			cout << endl;
 		}*/
+		for (int i = 0; i < maxNodes; i++)
+			sumTime += sumTime + procTab[i];
 		return  max;
 	}
 
@@ -261,13 +267,25 @@ public:
 	vector<Proc> const &getV() const {
 		return output;
 	}
+	
+	int getBound()
+	{
+		return lowerBound;
+	}
+
+	int getSumTime()
+	{
+		return sumTime;
+	}
 
 };
 
 int main()
 {
+	unsigned int sum;
 	int num = 0;
 	int out1, out2= 2147483646;
+	int bound;
 	double start, stop;
 	Data tasklist;
 	vector<Proc> best_output;
@@ -277,6 +295,8 @@ int main()
 	//tasklist.showData();
 	do {
 		out1 = tasklist.GRASP();
+		bound = tasklist.getBound();
+		sum = tasklist.getSumTime();
 		if (out1 < out2)
 		{
 			out2 = out1;
