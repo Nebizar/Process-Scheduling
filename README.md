@@ -13,7 +13,9 @@ PTS.exe  input_file  output_file  records_number
 
 ```
 input_file - file containig tasks to schedule
+
 output_file - wanted output file
+
 records_number - quantity of records to read from file (-1 if all wanted)
 
 
