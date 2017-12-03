@@ -1,0 +1,53 @@
+; Version: 2.2
+; Computer: No computer
+; Installation: No instalation
+;
+; Acknowledge: No acknowledge
+; Information: http://www.cs.huji.ac.il/labs/parallel/workload/
+;
+; Conversion: 
+; MaxJobs: 5
+; MaxRecords: 5
+; Preemption: No
+; UnixStartTime: 749458803
+; TimeZone: -28800
+; TimeZoneString: US/Pacific
+; StartTime: Fri Oct 01 00:00:03 PDT 1993
+; EndTime:   Fri Dec 31 23:03:45 PST 1993
+; MaxNodes: 12
+; MaxProcs: 12
+; Note: The only important fields in the header are: MaxNodes, MaxProcs.
+; Note: There is no information on wait times, these are set by the scheduler.
+;
+; MaxQueues: 0
+;
+;  Note: 
+; 0 - Job Number	- important
+; 1 - Submit Time 	- important
+; 2 - Wait Time 	<-- de facto, your program must set this
+; 3 - Run Time		- important
+; 4 - Number of Processors - important
+; 5 - Average CPU Time Used			- ignore
+; 6 - Used Memory				- ignore
+; 7 - Requested Number of Processors		- ignore
+; 8 - Requested Time				- ignore
+; 9 - Requested Memory				- ignore
+; 10 - status (1=completed, 0=killed)		- ignore
+; 11 - User ID					- ignore
+; 12 - Group ID					- ignore
+; 13 - Executable (Application) Number		- ignore
+; 14 - Queue Number				- ignore
+; 15 - Partition Number				- ignore
+; 16 - Preceding Job Number			- ignore
+; 17 - Think Time from Preceding Job		- ignore
+;
+;
+; Job#      r_j         p_j   size_j        
+;
+; Cmax=6
+    1        0      0   2     8     -1    -1   -1     -1    -1 -1   1   1  -1  1 -1 -1 -1
+    2        0      0   4     2     -1    -1   -1     -1    -1 -1   1   1  -1  1 -1 -1 -1
+    3        0      0   2     10    -1    -1   -1     -1    -1 -1   1   1  -1  1 -1 -1 -1
+    4        0      0   4     4     -1    -1   -1     -1    -1 -1   1   1  -1  1 -1 -1 -1
+    5        1      0   2     6     -1    -1   -1     -1    -1 -1   1   1  -1  1 -1 -1 -1
+
