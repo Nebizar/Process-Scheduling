@@ -123,34 +123,117 @@ public:
 	{
 		return sumTime;
 	}
-
 	void schedule()
 	{
-		int j;
+		//Task* bestPerm;
 		int *indeks;
+		unsigned long long max = 0;
 		maxJobs = data.size();
 		unsigned long long time = 0;
 		vector <Task> ready;
+		int chosen;
+		int readyS;
+		bool choice;
+		Proc out;
+		unsigned long long* procTab = new unsigned long long[maxNodes];
+		unsigned long long deltaT = 9999999999999999;
+		//unsigned long long* procTab2 = new unsigned long long[maxNodes];
+		for (int i = 0; i < maxNodes; i++) procTab[i] = 0;
 		sort(data.begin(), data.end(), sortfunc);//sort by submit time
-		for (int i = 0; i < maxJobs; i++)//for each element
+		int i = 0;
+		int counter = 0;
+		//cout << data[4].id << endl;
+		while(i < maxJobs)//for each element
 		{
 			if (data[i].submit > time)
 			{
 				time = data[i].submit;
 			}
-			j = 0;
-			while (data[i].submit == time && i < maxJobs)//if ask is ready - to vector
+			while (data[i].submit <= time)//if ask is ready - to vector
 			{
-				ready.push_back(data[j]);
+				ready.push_back(data[i]);
 				i++;
-				j++;
+				if (i >= maxJobs) break;
 			}
-			sort(ready.begin(), ready.end(), sortfunc2);//sort by id
-			do
+			//cout << "OK" << endl;
+			/*for (int j = 0; j < ready.size(); j++)
 			{
-				//test permutacji po wstawieniu i wybor najlepszej
-			} while (next_permutation(ready.begin(), ready.end()));//try inserting element with all permutations
-			ready.clear();//clear all elements
+				cout << ready[j].id << endl;
+			}
+			cout << "-----" << endl;*/
+			//WSTAWIANIE NA PROCESORY
+			int check = 0;
+			int counterH = 0;
+			int orgS = ready.size();
+			unsigned long long min,min2;
+			while (counterH<orgS)
+			{
+				choice = false;
+				readyS = ready.size();
+				min = 999999999999999;
+				for (int j = 0; j<maxNodes; j++)
+				{
+					if (procTab[j] <= time) check++;
+				}
+				for (int j = 0; j < readyS; j++)
+				{
+					if (ready[j].proc <= check && check - ready[j].proc < min)
+					{
+						min = check - ready[j].proc;
+						chosen = j;
+						//cout << j << endl;
+						choice = true;
+					}
+				}
+				//getchar();
+				//cout<<check<<endl;
+				if (choice)//if enough processors
+				{
+					//cout<<"good"<<endl;
+					int finish = time + ready[chosen].run;
+					counter = 0;
+					for (int j = 0; j<maxNodes; j++)//insert finish time for every occupied processor
+					{
+						if (procTab[j] <= time)
+						{
+							procTab[j] = finish;
+							out.processors.push_back(j);
+							//cout<<j<<" ";
+							counter++;
+						}
+						//cout<<counter<<endl;
+						if (counter == ready[chosen].proc) break;
+					}
+					out.id = ready[chosen].id;//add to output
+					out.start = time;
+					out.stop = finish;
+					output.push_back(out);
+					ready.erase(ready.begin() + chosen );
+					counterH++;
+					//cout << "cH: " << counterH << endl;
+					out.processors.clear();
+				}
+				else
+				{
+					min2 = 999999999999999;
+					for (int j = 0; j < maxNodes; j++)
+					{
+						if (procTab[j]<min2 && procTab[j]>time)
+							min2 = procTab[j];
+					}
+					time = min2;
+					//cout << "Time: " << time << endl;
+				}
+				//cout<<endl;
+				check = 0;
+			}
+			//KONIEC WSTAWNIANIA NA PROCKI
+			if (obliczSekundy(clock()) >= 293)
+			{
+				cout << "Za duza instancja";
+				break;
+			}
+			ready.clear();
 		}
 
 	}
@@ -163,7 +246,10 @@ int main(int argc, char **argv)
 	char *p;
 	long quant = strtol(argv[3], &p, 10);
 	tasklist.getData(argv[1], quant);
+	//tasklist.showData();
 	ofstream plik;
+	tasklist.schedule();
+	best_output = tasklist.getV();
 	plik.open(argv[2], ios::out);
 	for (int i = 0; i < best_output.size(); i++)
 	{
