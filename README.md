@@ -5,7 +5,9 @@ Implementations of Process Scheduling algorithms in C++.
 
 /Code - modified GRASP implementation
 
-/Code2 - second greedy algorithm with permutations checking
+/Code2 - second greedy algorithm 
+
+/Code3 - combination of both - the best algorithm here
 
 ## Launching
 
